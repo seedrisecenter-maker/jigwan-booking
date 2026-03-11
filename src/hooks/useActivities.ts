@@ -15,7 +15,6 @@ export function useActivities(locationId?: number) {
       .select(`
         *,
         location:locations(*),
-        creator:profiles!creator_id(name),
         reservation_count:reservations(count)
       `)
       .eq('status', 'active')

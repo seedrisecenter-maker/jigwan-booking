@@ -1,11 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { supabase } from '@/lib/supabase';
-import { useAuth } from '@/hooks/useAuth';
 import type { Activity } from '@/lib/types';
-import { UserPlus, UserMinus, LogIn } from 'lucide-react';
-import Link from 'next/link';
+import { UserPlus, Check } from 'lucide-react';
 
 interface ReservationButtonProps {
   activity: Activity;
@@ -13,96 +11,43 @@ interface ReservationButtonProps {
 }
 
 export default function ReservationButton({ activity, onReservationChange }: ReservationButtonProps) {
-  const { user } = useAuth();
-  const [hasReservation, setHasReservation] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [checking, setChecking] = useState(true);
+  const [showForm, setShowForm] = useState(false);
+  const [done, setDone] = useState(false);
+  const [error, setError] = useState('');
+  const [form, setForm] = useState({ name: '', phone: '' });
 
   const isFull = (activity.reservation_count ?? 0) >= activity.max_participants;
 
-  useEffect(() => {
-    if (!user) {
-      setChecking(false);
-      return;
-    }
-    checkReservation();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, activity.id]);
-
-  const checkReservation = async () => {
-    if (!user) return;
-    const { data } = await supabase
-      .from('reservations')
-      .select('id')
-      .eq('activity_id', activity.id)
-      .eq('user_id', user.id)
-      .eq('status', 'confirmed')
-      .single();
-    setHasReservation(!!data);
-    setChecking(false);
-  };
-
-  const handleReserve = async () => {
-    if (!user) return;
+  const handleReserve = async (e: React.FormEvent) => {
+    e.preventDefault();
     setLoading(true);
-    const { error } = await supabase.from('reservations').insert({
+    setError('');
+
+    const { error: insertError } = await supabase.from('reservations').insert({
       activity_id: activity.id,
-      user_id: user.id,
+      participant_name: form.name,
+      participant_phone: form.phone,
       status: 'confirmed',
     });
-    if (!error) {
-      setHasReservation(true);
-      onReservationChange?.();
+
+    if (insertError) {
+      setError(insertError.message);
+      setLoading(false);
+      return;
     }
+
+    setDone(true);
     setLoading(false);
+    onReservationChange?.();
   };
 
-  const handleCancel = async () => {
-    if (!user) return;
-    setLoading(true);
-    const { error } = await supabase
-      .from('reservations')
-      .update({ status: 'cancelled' })
-      .eq('activity_id', activity.id)
-      .eq('user_id', user.id)
-      .eq('status', 'confirmed');
-    if (!error) {
-      setHasReservation(false);
-      onReservationChange?.();
-    }
-    setLoading(false);
-  };
-
-  if (!user) {
+  if (done) {
     return (
-      <Link
-        href="/login"
-        className="flex items-center justify-center gap-2 w-full bg-gray-100 text-gray-700 py-3 rounded-lg font-medium hover:bg-gray-200 transition-colors"
-      >
-        <LogIn className="w-5 h-5" />
-        로그인 후 예약하기
-      </Link>
-    );
-  }
-
-  if (checking) {
-    return (
-      <div className="w-full bg-gray-100 text-gray-400 py-3 rounded-lg font-medium text-center">
-        확인 중...
+      <div className="flex items-center justify-center gap-2 w-full bg-green-50 text-green-700 py-3 rounded-lg font-medium">
+        <Check className="w-5 h-5" />
+        예약이 완료되었습니다!
       </div>
-    );
-  }
-
-  if (hasReservation) {
-    return (
-      <button
-        onClick={handleCancel}
-        disabled={loading}
-        className="flex items-center justify-center gap-2 w-full bg-red-50 text-red-600 py-3 rounded-lg font-medium hover:bg-red-100 transition-colors disabled:opacity-50"
-      >
-        <UserMinus className="w-5 h-5" />
-        {loading ? '취소 중...' : '예약 취소'}
-      </button>
     );
   }
 
@@ -114,14 +59,61 @@ export default function ReservationButton({ activity, onReservationChange }: Res
     );
   }
 
+  if (!showForm) {
+    return (
+      <button
+        onClick={() => setShowForm(true)}
+        className="flex items-center justify-center gap-2 w-full bg-indigo-600 text-white py-3 rounded-lg font-medium hover:bg-indigo-700 transition-colors"
+      >
+        <UserPlus className="w-5 h-5" />
+        참여 예약하기
+      </button>
+    );
+  }
+
   return (
-    <button
-      onClick={handleReserve}
-      disabled={loading}
-      className="flex items-center justify-center gap-2 w-full bg-indigo-600 text-white py-3 rounded-lg font-medium hover:bg-indigo-700 transition-colors disabled:opacity-50"
-    >
-      <UserPlus className="w-5 h-5" />
-      {loading ? '예약 중...' : '참여 예약하기'}
-    </button>
+    <form onSubmit={handleReserve} className="space-y-3 bg-indigo-50 p-4 rounded-lg">
+      {error && (
+        <div className="bg-red-50 border border-red-200 text-red-700 px-3 py-2 rounded-lg text-sm">
+          {error}
+        </div>
+      )}
+      <div>
+        <input
+          type="text"
+          required
+          value={form.name}
+          onChange={e => setForm({ ...form, name: e.target.value })}
+          placeholder="이름"
+          className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none text-sm"
+        />
+      </div>
+      <div>
+        <input
+          type="tel"
+          required
+          value={form.phone}
+          onChange={e => setForm({ ...form, phone: e.target.value })}
+          placeholder="연락처 (010-1234-5678)"
+          className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none text-sm"
+        />
+      </div>
+      <div className="flex gap-2">
+        <button
+          type="submit"
+          disabled={loading}
+          className="flex-1 bg-indigo-600 text-white py-2.5 rounded-lg font-medium hover:bg-indigo-700 transition-colors disabled:opacity-50 text-sm"
+        >
+          {loading ? '예약 중...' : '예약 확정'}
+        </button>
+        <button
+          type="button"
+          onClick={() => setShowForm(false)}
+          className="px-4 py-2.5 bg-gray-200 text-gray-600 rounded-lg hover:bg-gray-300 transition-colors text-sm"
+        >
+          취소
+        </button>
+      </div>
+    </form>
   );
 }

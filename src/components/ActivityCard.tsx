@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Activity, ACTIVITY_TYPE_LABELS, LOCATIONS } from '@/lib/types';
+import { Activity, ACTIVITY_TYPE_LABELS } from '@/lib/types';
 import { Calendar, MapPin, Users, Clock } from 'lucide-react';
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
@@ -11,7 +11,7 @@ interface ActivityCardProps {
 }
 
 export default function ActivityCard({ activity }: ActivityCardProps) {
-  const location = activity.location || LOCATIONS.find(l => l.id === activity.location_id);
+  const location = activity.location;
   const isFull = activity.reservation_count !== undefined && activity.reservation_count >= activity.max_participants;
   const typeLabel = ACTIVITY_TYPE_LABELS[activity.activity_type];
 

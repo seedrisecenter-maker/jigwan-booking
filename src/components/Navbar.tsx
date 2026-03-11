@@ -1,12 +1,10 @@
 'use client';
 
 import Link from 'next/link';
-import { useAuth } from '@/hooks/useAuth';
-import { BookOpen, Calendar, User, LogOut, Shield, Menu, X } from 'lucide-react';
+import { BookOpen, Calendar, PlusCircle, Menu, X } from 'lucide-react';
 import { useState } from 'react';
 
 export default function Navbar() {
-  const { user, profile, signOut, isCreator, isAdmin } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
@@ -27,36 +25,10 @@ export default function Navbar() {
             <Link href="/activities" className="text-gray-600 hover:text-indigo-600 transition-colors">
               활동 목록
             </Link>
-
-            {user ? (
-              <>
-                {isCreator && (
-                  <Link href="/activities/new" className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors text-sm">
-                    활동 만들기
-                  </Link>
-                )}
-                <Link href="/mypage" className="flex items-center gap-1 text-gray-600 hover:text-indigo-600 transition-colors">
-                  <User className="w-4 h-4" />
-                  {profile?.name || '마이페이지'}
-                </Link>
-                {isAdmin && (
-                  <Link href="/admin" className="flex items-center gap-1 text-gray-600 hover:text-indigo-600 transition-colors">
-                    <Shield className="w-4 h-4" />
-                    관리
-                  </Link>
-                )}
-                <button
-                  onClick={() => signOut()}
-                  className="flex items-center gap-1 text-gray-400 hover:text-red-500 transition-colors"
-                >
-                  <LogOut className="w-4 h-4" />
-                </button>
-              </>
-            ) : (
-              <Link href="/login" className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors text-sm">
-                로그인
-              </Link>
-            )}
+            <Link href="/activities/new" className="flex items-center gap-1 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors text-sm">
+              <PlusCircle className="w-4 h-4" />
+              활동 등록
+            </Link>
           </div>
 
           {/* Mobile menu button */}
@@ -74,30 +46,9 @@ export default function Navbar() {
             <Link href="/activities" className="text-gray-600 hover:text-indigo-600 py-1" onClick={() => setMenuOpen(false)}>
               활동 목록
             </Link>
-            {user ? (
-              <>
-                {isCreator && (
-                  <Link href="/activities/new" className="text-indigo-600 font-medium py-1" onClick={() => setMenuOpen(false)}>
-                    활동 만들기
-                  </Link>
-                )}
-                <Link href="/mypage" className="text-gray-600 hover:text-indigo-600 py-1" onClick={() => setMenuOpen(false)}>
-                  마이페이지
-                </Link>
-                {isAdmin && (
-                  <Link href="/admin" className="text-gray-600 hover:text-indigo-600 py-1" onClick={() => setMenuOpen(false)}>
-                    관리자
-                  </Link>
-                )}
-                <button onClick={() => { signOut(); setMenuOpen(false); }} className="text-left text-red-500 py-1">
-                  로그아웃
-                </button>
-              </>
-            ) : (
-              <Link href="/login" className="text-indigo-600 font-medium py-1" onClick={() => setMenuOpen(false)}>
-                로그인
-              </Link>
-            )}
+            <Link href="/activities/new" className="text-indigo-600 font-medium py-1" onClick={() => setMenuOpen(false)}>
+              활동 등록
+            </Link>
           </div>
         )}
       </div>
