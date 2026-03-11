@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { ACTIVITY_TYPE_LABELS, ActivityType } from '@/lib/types';
 import { useLocations } from '@/hooks/useLocations';
@@ -9,6 +9,8 @@ import { useLocations } from '@/hooks/useLocations';
 export default function ActivityForm() {
   const { locations } = useLocations();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const dateFromCalendar = searchParams.get('date') || '';
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -19,7 +21,7 @@ export default function ActivityForm() {
     description: '',
     activity_type: 'lecture' as ActivityType,
     location_id: '',
-    start_date: '',
+    start_date: dateFromCalendar,
     start_time: '',
     end_time: '',
     max_participants: '20',

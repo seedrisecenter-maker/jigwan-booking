@@ -47,6 +47,9 @@ export default function CalendarView({ activities }: CalendarViewProps) {
         }}
         locale="ko"
         events={events}
+        dateClick={(info) => {
+          router.push(`/activities/new?date=${info.dateStr}`);
+        }}
         eventClick={(info) => {
           router.push(`/activities/${info.event.id}`);
         }}
