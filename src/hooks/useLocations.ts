@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
-import { Location, LOCATIONS } from '@/lib/types';
+import { Location } from '@/lib/types';
 
 export function useLocations() {
-  const [locations, setLocations] = useState<Location[]>(LOCATIONS);
+  const [locations, setLocations] = useState<Location[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
