@@ -4,6 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:safe": "pm2 start ecosystem.config.js",
+    "dev:stop": "pm2 stop jigwan-booking",
+    "dev:restart": "pm2 restart jigwan-booking",
+    "dev:logs": "pm2 logs jigwan-booking",
+    "dev:status": "pm2 status",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"

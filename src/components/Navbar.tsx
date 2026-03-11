@@ -53,14 +53,9 @@ export default function Navbar() {
                 </button>
               </>
             ) : (
-              <div className="flex items-center gap-3">
-                <Link href="/login" className="text-gray-600 hover:text-indigo-600 transition-colors">
-                  로그인
-                </Link>
-                <Link href="/signup" className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors text-sm">
-                  회원가입
-                </Link>
-              </div>
+              <Link href="/login" className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors text-sm">
+                로그인
+              </Link>
             )}
           </div>
 
@@ -99,14 +94,9 @@ export default function Navbar() {
                 </button>
               </>
             ) : (
-              <>
-                <Link href="/login" className="text-gray-600 hover:text-indigo-600 py-1" onClick={() => setMenuOpen(false)}>
-                  로그인
-                </Link>
-                <Link href="/signup" className="text-indigo-600 font-medium py-1" onClick={() => setMenuOpen(false)}>
-                  회원가입
-                </Link>
-              </>
+              <Link href="/login" className="text-indigo-600 font-medium py-1" onClick={() => setMenuOpen(false)}>
+                로그인
+              </Link>
             )}
           </div>
         )}

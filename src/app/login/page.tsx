@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
 import { useAuth } from '@/hooks/useAuth';
 import { BookOpen } from 'lucide-react';
 
@@ -77,11 +76,8 @@ export default function LoginPage() {
             {loading ? '로그인 중...' : '로그인'}
           </button>
 
-          <p className="text-center text-sm text-gray-500">
-            계정이 없으신가요?{' '}
-            <Link href="/signup" className="text-indigo-600 font-medium hover:underline">
-              회원가입
-            </Link>
+          <p className="text-center text-sm text-gray-400">
+            계정 문의: 관리자에게 연락하세요
           </p>
         </form>
       </div>
