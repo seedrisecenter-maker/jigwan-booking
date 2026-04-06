@@ -221,7 +221,7 @@ export default function ActivityForm() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">활동 소개</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">내용 소개</label>
             <textarea
               rows={4}
               value={form.description}

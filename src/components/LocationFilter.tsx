@@ -25,7 +25,7 @@ export default function LocationFilter({ locations, selectedLocation, onChange }
               : 'text-gray-600 hover:bg-gray-50'
           }`}
         >
-          전체 보기
+          전체 지관서가
         </button>
         {(locations ?? []).map(location => (
           <button

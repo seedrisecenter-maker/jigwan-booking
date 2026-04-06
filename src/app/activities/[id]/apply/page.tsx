@@ -175,10 +175,10 @@ export default function ApplyPage() {
           </div>
         </div>
 
-        {/* 활동 소개 */}
+        {/* 내용 소개 */}
         {activity.description && (
           <div className="bg-white rounded-xl border border-gray-200 p-6">
-            <h2 className="font-bold text-gray-900 text-lg mb-3">활동 소개</h2>
+            <h2 className="font-bold text-gray-900 text-lg mb-3">내용 소개</h2>
             <p className="text-sm text-gray-600 whitespace-pre-wrap leading-relaxed">
               {activity.description}
             </p>
