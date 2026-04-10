@@ -12,11 +12,13 @@ import { ko } from 'date-fns/locale';
 
 export default function ApplyPage() {
   const params = useParams();
+  const id = params?.id as string | undefined;
   const [activity, setActivity] = useState<Activity | null>(null);
   const [loading, setLoading] = useState(true);
   const [submitted, setSubmitted] = useState(false);
 
   const fetchActivity = useCallback(async () => {
+    if (!id) return;
     const { data } = await supabase
       .from('activities')
       .select(`
@@ -24,7 +26,7 @@ export default function ApplyPage() {
         location:locations(*),
         reservation_count:reservations(count)
       `)
-      .eq('id', params.id)
+      .eq('id', id)
       .single();
 
     if (data) {
@@ -38,7 +40,7 @@ export default function ApplyPage() {
       setActivity(mapped as Activity);
     }
     setLoading(false);
-  }, [params.id]);
+  }, [id]);
 
   useEffect(() => {
     fetchActivity();

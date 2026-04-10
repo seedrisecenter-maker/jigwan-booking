@@ -31,6 +31,7 @@ export default function Home() {
             locations={locations}
             selectedLocation={selectedLocation}
             onChange={setSelectedLocation}
+            activities={activities}
           />
 
           {/* Activity type filter */}

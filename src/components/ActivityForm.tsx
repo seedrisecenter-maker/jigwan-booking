@@ -20,7 +20,7 @@ export default function ActivityForm() {
   const { locations } = useLocations();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const dateFromCalendar = searchParams.get('date') || '';
+  const dateFromCalendar = searchParams?.get('date') || '';
 
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);

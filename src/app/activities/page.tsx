@@ -34,6 +34,7 @@ export default function ActivitiesPage() {
             locations={locations}
             selectedLocation={selectedLocation}
             onChange={setSelectedLocation}
+            activities={activities}
           />
 
           <div className="bg-white rounded-xl border border-gray-200 p-4">

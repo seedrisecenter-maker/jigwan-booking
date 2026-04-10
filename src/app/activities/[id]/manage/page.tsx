@@ -19,6 +19,7 @@ import { format } from 'date-fns';
 
 export default function ManagePage() {
   const params = useParams();
+  const id = params?.id as string | undefined;
   const [activity, setActivity] = useState<Activity | null>(null);
   const [participants, setParticipants] = useState<Reservation[]>([]);
   const [loading, setLoading] = useState(true);
@@ -29,25 +30,27 @@ export default function ManagePage() {
   const [copiedEmails, setCopiedEmails] = useState(false);
 
   const fetchActivity = useCallback(async () => {
+    if (!id) return;
     const { data } = await supabase
       .from('activities')
       .select('*')
-      .eq('id', params.id)
+      .eq('id', id)
       .single();
 
     if (data) setActivity(data as Activity);
     setLoading(false);
-  }, [params.id]);
+  }, [id]);
 
   const fetchParticipants = useCallback(async () => {
+    if (!id) return;
     const { data } = await supabase
       .from('reservations')
       .select('*')
-      .eq('activity_id', params.id)
+      .eq('activity_id', id)
       .eq('status', 'confirmed')
       .order('created_at', { ascending: true });
     if (data) setParticipants(data as Reservation[]);
-  }, [params.id]);
+  }, [id]);
 
   useEffect(() => {
     fetchActivity();
@@ -150,7 +153,7 @@ export default function ManagePage() {
     return (
       <div className="max-w-md mx-auto px-4 py-12">
         <Link
-          href={`/activities/${params.id}`}
+          href={`/activities/${id}`}
           className="flex items-center gap-1 text-gray-500 hover:text-indigo-600 mb-6 text-sm"
         >
           <ArrowLeft className="w-4 h-4" />
@@ -193,7 +196,7 @@ export default function ManagePage() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-6">
       <Link
-        href={`/activities/${params.id}`}
+        href={`/activities/${id}`}
         className="flex items-center gap-1 text-gray-500 hover:text-indigo-600 mb-6 text-sm"
       >
         <ArrowLeft className="w-4 h-4" />

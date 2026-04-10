@@ -25,12 +25,14 @@ import { ko } from 'date-fns/locale';
 
 export default function ActivityDetailPage() {
   const params = useParams();
+  const id = params?.id as string | undefined;
   const [activity, setActivity] = useState<Activity | null>(null);
   const [participants, setParticipants] = useState<Reservation[]>([]);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
 
   const fetchActivity = useCallback(async () => {
+    if (!id) return;
     const { data } = await supabase
       .from('activities')
       .select(`
@@ -38,7 +40,7 @@ export default function ActivityDetailPage() {
         location:locations(*),
         reservation_count:reservations(count)
       `)
-      .eq('id', params.id)
+      .eq('id', id)
       .single();
 
     if (data) {
@@ -52,16 +54,17 @@ export default function ActivityDetailPage() {
       setActivity(mapped as Activity);
     }
     setLoading(false);
-  }, [params.id]);
+  }, [id]);
 
   const fetchParticipants = useCallback(async () => {
+    if (!id) return;
     const { data } = await supabase
       .from('reservations')
       .select('*')
-      .eq('activity_id', params.id)
+      .eq('activity_id', id)
       .eq('status', 'confirmed');
     if (data) setParticipants(data as Reservation[]);
-  }, [params.id]);
+  }, [id]);
 
   useEffect(() => {
     fetchActivity();
@@ -69,7 +72,7 @@ export default function ActivityDetailPage() {
   }, [fetchActivity, fetchParticipants]);
 
   const copyApplyLink = () => {
-    const url = `${window.location.origin}/activities/${params.id}/apply`;
+    const url = `${window.location.origin}/activities/${id}/apply`;
     navigator.clipboard.writeText(url);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
